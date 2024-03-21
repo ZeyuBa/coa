@@ -64,7 +64,7 @@ def main(data_path, params_path, pipeline_path,mode):
 
         # Now use dtest for prediction
         y_pred = model.predict(dtest)
-        y_pred=y_pred>0.5
+        # y_pred=y_pred>0.5
         # print(y_pred)
         df_y_pred = pd.DataFrame({'Strength':y_pred})
         # df_y_pred['Strength'] = df_y_pred['Strength'].round(2)

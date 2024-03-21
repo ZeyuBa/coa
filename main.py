@@ -78,6 +78,9 @@ def main():
     if not description:
         print(f"Warning: No file named 'description.txt' found in directory {ab_dir_path}")
 
+        
+    for file in root_dir.glob('best*'):
+        file.unlink()
     # load yaml file
 
     pipeline_config.append(load_pipeline_config(config_path))
