@@ -1,0 +1,147 @@
+### Import following necessary libs
+from os import pipe
+from typing import List,Tuple
+import pandas as pd
+from dimensionality_reduction import dimensionality_reduction
+from feature_selection import feature_selection
+from feature_transformation import feature_transformation
+from resampling import resampling
+import xgboost as xgb
+xgb.set_config(verbosity=0)
+from sklearn.model_selection import KFold
+from sklearn.metrics import accuracy_score, mean_squared_error
+from sklearn.model_selection import train_test_split
+import numpy as np
+import argparse
+import pickle
+import math
+import demjson3
+from pathlib import Path
+root_dir=Path(__file__).parent.resolve()
+save_path=root_dir
+# print('#####',save_path)
+def xgboost_model(type, params):
+    if type == 'classification':
+        return xgb.XGBClassifier(**params, eval_metric='mlogloss')
+    elif type == 'regression':
+        return xgb.XGBRegressor(**params,eval_metric='rmse')
+    else:
+        raise ValueError("Invalid task type. Please choose either 'classification' or 'regression'.")
+
+
+def evaluate_model(model, X_test, y_test, type):
+    if type == 'classification':
+        y_pred = model.predict(X_test)
+        return accuracy_score(y_test, y_pred)
+    elif type == 'regression':
+        y_pred = model.predict(X_test)
+        return math.sqrt(mean_squared_error(y_test, y_pred))
+    else:
+        raise ValueError("Invalid task type. Please choose either 'classification' or 'regression'.")
+
+def main(data_path, params_path, pipeline_path,mode):
+    info_dict=demjson3.decode_file(params_path)
+    type,params=info_dict['type'],info_dict['params']
+    data = pd.read_pickle(data_path)
+
+    # Load the pipeline
+    with open(pipeline_path, 'rb') as f:
+        pipeline = pickle.load(f)
+    # print(pipeline)
+    preprocessed_data = data
+    for op in pipeline:
+        op[1]['data']=preprocessed_data
+        if op[0]=='resampling':
+            continue
+        preprocessed_data=eval(op[0])(**op[1])
+    X = preprocessed_data.drop(columns='target')
+    y = preprocessed_data['target']
+    if mode=='predict':
+                # To load the model later
+        model = xgb.Booster()
+        model.load_model('best_model.json')
+        dtest = xgb.DMatrix(X)
+
+        # Now use dtest for prediction
+        y_pred = model.predict(dtest)
+        y_pred=y_pred>0.5
+        # print(y_pred)
+        df_y_pred = pd.DataFrame({'Strength':y_pred})
+        # df_y_pred['Strength'] = df_y_pred['Strength'].round(2)
+        # Save to CSV
+        df_y_pred.to_csv('prediction.csv', index=False)
+        # y_pred.to_csv('prediction.csv')
+        return {"test":-1.0}, None,None
+    else:
+            # print('data time cost:',time.time()-start)
+
+        # Split the data into training and test sets
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=42)
+        kf = KFold(n_splits=5)
+        traning_log = {}
+        metrics = {}
+        best_model = None
+        best_metric = float('inf')  # or -float('inf') depending on whether you want to maximize or minimize the metric
+        
+        for fold, (train_idx, val_idx) in enumerate(kf.split(X_train)):  # Change X to X_train
+            X_fold_train, X_fold_val = X_train.iloc[train_idx], X_train.iloc[val_idx]  # Change X to X_train
+            y_fold_train, y_fold_val = y_train.iloc[train_idx], y_train.iloc[val_idx]  # Change y to y_train
+
+            model = xgboost_model(type=type, params=params)
+            model.fit(X_fold_train, y_fold_train, eval_set=[(X_fold_val, y_fold_val)], verbose=False)
+
+            traning_log[f'fold_{fold}'] = model.evals_result()
+            fold_metric = evaluate_model(model, X_fold_val, y_fold_val, type)  # Assuming evaluate_model returns a single metric value
+            metrics[f'fold_{fold}'] = fold_metric
+            if type == 'regression':
+                if fold_metric < best_metric:
+                    best_metric = fold_metric
+                    best_model = model
+            else:
+                if fold_metric > best_metric:
+                    best_metric = fold_metric
+                    best_model = model
+                # Save the best model
+
+        metrics['test']=evaluate_model(best_model, X_test, y_test, type)
+
+        return metrics, traning_log,best_model
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Run machine learning model training and evaluation.')
+    parser.add_argument('data_path', type=str,help='Path to the data file')
+    parser.add_argument('params_path', type=str,help='Path to the parameters file')
+    parser.add_argument('pipeline_path', type=str ,help='Path to the pipeline file')
+    parser.add_argument('mode', type=str ,help='train or predict')
+    args = parser.parse_args()
+
+    metrics, training_log,best_model=main(args.data_path, args.params_path, args.pipeline_path,args.mode)
+
+    demjson3.encode_to_file('result.json', {'metrics': metrics, 'training_log': training_log},overwrite=True)
+    import os 
+    import demjson3
+    if args.mode == 'train':
+        if not os.path.exists('best_metric.json'):
+            demjson3.encode_to_file('best_metric.json',metrics['test'],overwrite=True)
+        else:
+            best_metric=demjson3.decode_file('best_metric.json')
+            if type == 'regression':
+                if best_metric < metrics['test']:
+                    demjson3.encode_to_file('best_metric.json',metrics['test'],overwrite=True)
+                    best_model.save_model('best_model.json')
+                    with open(args.pipeline_path, 'rb') as f:
+                        pipeline = pickle.load(f)
+                    with open('best_plan.pkl', 'wb') as f:
+                        pickle.dump(pipeline, f)
+            else:
+                if metrics['test'] > best_metric:
+                    demjson3.encode_to_file('best_metric.json',metrics['test'],overwrite=True)
+                    best_model.save_model('best_model.json')
+                    with open(args.pipeline_path, 'rb') as f:
+                        pipeline = pickle.load(f)
+                    with open('best_plan.pkl', 'wb') as f:
+                        pickle.dump(pipeline, f)
+    # Print the result as a JSON string
+    print(metrics['test'])
+    # os.environ['RUN_RESUlT']=str(metrics['test'])

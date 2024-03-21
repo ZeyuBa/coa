@@ -1,0 +1,1 @@
+{"model_plan": {"type": "regression", "params": {"booster": "gbtree", "objective": "reg:squarederror", "gamma": 0, "max_depth": 3, "reg_lambda": 1, "subsample": 0.8, "colsample_bytree": 0.8, "min_child_weight": 1, "silent": 1, "learning_rate": 0.1, "seed": 42}}}

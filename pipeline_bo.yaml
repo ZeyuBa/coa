@@ -1,0 +1,15 @@
+
+
+# - node: DataPlanProviderNode
+#   name: DataPlanProvider
+#   inputs: [DataDescriber, DomainExpert, TaskPromptCombiner]
+#   outputs: [data_plan]
+
+# - node: ProgrammerNode
+#   name: Programmer
+#   inputs: [DataPlanProvider, ModelPlanProvider]
+#   outputs: code
+
+- node: ConductorNode
+  name: Conductor
+  inputs: [File]

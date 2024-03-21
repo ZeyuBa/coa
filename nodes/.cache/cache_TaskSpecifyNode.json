@@ -1,0 +1,1 @@
+{"specific_task": "Build a regression model to predict the compressive strength of concrete based on the given features such as CementComponent, BlastFurnaceSlag, FlyAshComponent, WaterComponent, SuperplasticizerComponent, CoarseAggregateComponent, FineAggregateComponent, and AgeInDays."}

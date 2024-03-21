@@ -1,0 +1,102 @@
+BasePromptNode:
+  verbose: true
+  max_retries: 3
+  is_retry: false
+  is_cache: true
+  outputs: ['output_1']
+  model_config:
+    model_name_or_path: "gpt-3.5-turbo"
+    model_kwargs:
+      temperature: 0
+  prompt_config: {}
+
+DataDescribeNode:
+  outputs: ['data_description']
+  verbose: true
+  model_config:
+    model_name_or_path: "gpt-3.5-turbo"
+    model_kwargs:
+      temperature: 0
+  prompt_template: 'data_description_template'
+  
+
+
+TypeSpecifyNode:
+  outputs: ['type']
+  verbose: true
+  prompt_template: 'task_type_template'
+  model_config:
+    model_kwargs:
+      temperature: 0
+      response_format:
+        type: "json_object"
+
+TaskSpecifyNode:
+  outputs: ['specific_task']
+  verbose: true
+  prompt_template: 'task_specify_template'
+  is_retry: true
+  model_config:
+    model_kwargs:
+      temperature: 0
+      max_tokens: 1000
+      response_format:
+        type: "json_object"
+
+TaskPromptNode:
+  outputs: ['task_prompt']
+  verbose: true
+
+ProgrammerNode:
+  outputs: ['code']
+  verbose: true
+  prompt_template: 'program_template'
+  model_config:
+    model_kwargs:
+      temperature: 0
+      max_tokens: 2000
+  is_cache: false
+
+ModelPlanProviderNode:
+  outputs: ['model_plan']
+  verbose: true
+  prompt_template: 'model_plan_template'
+  model_config:
+    model_kwargs:
+      temperature: 0
+      max_tokens: 1000
+      response_format:
+        type: "json_object"
+
+DomainExpertNode:
+  outputs: ['domain_knowledge']
+  verbose: true
+  prompt_template: 'domain_knowledge_template'
+  max_retries: 5
+  model_config:
+    model_kwargs:
+      temperature: 0.5
+      max_tokens: 1000
+      response_format:
+        type: "json_object"
+  is_retry: true
+
+DataPlanProviderNode:
+  outputs: ['data_plan']
+  verbose: true
+  prompt_template: 'data_plan_template'
+  max_retries: 12
+  model_config:
+    model_kwargs:
+      temperature: 0
+      max_tokens: 1000
+      response_format:
+        type: "json_object"
+  is_retry: true
+
+
+
+ConductorNode:
+  outputs: ['result']
+  verbose: true
+  is_cache: false

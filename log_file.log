@@ -1,0 +1,106 @@
+2024-03-19T14:36:54.591770+0800 INFO time cost: 1.133648157119751
+2024-03-19T14:36:55.746178+0800 INFO time cost: 1.1458489894866943
+2024-03-19T14:38:41.832908+0800 INFO time cost: 1.1612098217010498
+2024-03-19T14:38:42.994902+0800 INFO time cost: 1.153975009918213
+2024-03-19T14:46:08.670327+0800 INFO time cost: 1.1854336261749268
+2024-03-19T14:46:09.873057+0800 INFO time cost: 1.1938669681549072
+2024-03-19T14:46:09.884870+0800 INFO After 0 iterations, best obj is 12.38
+2024-03-19T14:46:11.103987+0800 INFO time cost: 1.2165677547454834
+2024-03-19T14:46:11.105987+0800 INFO After 1 iterations, best obj is 15.76
+2024-03-19T14:46:12.296571+0800 INFO time cost: 1.1875810623168945
+2024-03-19T14:46:12.298569+0800 INFO After 2 iterations, best obj is 15.76
+2024-03-19T14:46:13.515169+0800 INFO time cost: 1.2035222053527832
+2024-03-19T14:46:13.517170+0800 INFO After 3 iterations, best obj is 15.76
+2024-03-19T14:46:14.838262+0800 INFO time cost: 1.3175861835479736
+2024-03-19T14:46:14.840261+0800 INFO After 4 iterations, best obj is 15.76
+2024-03-19T14:46:16.159868+0800 INFO time cost: 1.316450595855713
+2024-03-19T14:46:16.161392+0800 INFO After 5 iterations, best obj is 15.76
+2024-03-19T14:46:17.363132+0800 INFO time cost: 1.1987428665161133
+2024-03-19T14:46:17.365133+0800 INFO After 6 iterations, best obj is 15.76
+2024-03-19T14:46:18.594271+0800 INFO time cost: 1.2261393070220947
+2024-03-19T14:46:18.596275+0800 INFO After 7 iterations, best obj is 15.76
+2024-03-19T14:46:24.127184+0800 INFO time cost: 1.161942481994629
+2024-03-19T14:46:24.129186+0800 INFO After 8 iterations, best obj is 16.06
+2024-03-19T14:46:29.062839+0800 INFO time cost: 1.2090208530426025
+2024-03-19T14:46:29.064841+0800 INFO After 9 iterations, best obj is 16.06
+2024-03-19T14:46:35.035623+0800 INFO time cost: 1.1501505374908447
+2024-03-19T14:46:35.037630+0800 INFO After 10 iterations, best obj is 16.39
+2024-03-19T21:47:19.633726+0800 INFO time cost: 1.285858392715454
+2024-03-19T21:47:20.919907+0800 INFO time cost: 1.2526514530181885
+2024-03-19T21:47:20.921911+0800 INFO After 0 iterations, best obj is 11.97
+2024-03-19T21:47:22.192017+0800 INFO time cost: 1.2571020126342773
+2024-03-19T21:47:22.194018+0800 INFO After 1 iterations, best obj is 15.70
+2024-03-19T21:47:23.476707+0800 INFO time cost: 1.2796850204467773
+2024-03-19T21:47:23.478707+0800 INFO After 2 iterations, best obj is 15.70
+2024-03-19T21:47:24.732113+0800 INFO time cost: 1.2498397827148438
+2024-03-19T21:47:24.734115+0800 INFO After 3 iterations, best obj is 15.70
+2024-03-19T21:47:25.987722+0800 INFO time cost: 1.2506067752838135
+2024-03-19T21:47:25.989723+0800 INFO After 4 iterations, best obj is 15.70
+2024-03-19T21:47:27.220256+0800 INFO time cost: 1.2285337448120117
+2024-03-19T21:47:27.221256+0800 INFO After 5 iterations, best obj is 15.70
+2024-03-19T21:47:28.456393+0800 INFO time cost: 1.2321369647979736
+2024-03-19T21:47:28.457393+0800 INFO After 6 iterations, best obj is 16.47
+2024-03-19T21:47:29.700540+0800 INFO time cost: 1.2402381896972656
+2024-03-19T21:47:29.701540+0800 INFO After 7 iterations, best obj is 16.47
+2024-03-19T21:47:35.390320+0800 INFO time cost: 1.2948668003082275
+2024-03-19T21:47:35.391321+0800 INFO After 8 iterations, best obj is 16.47
+2024-03-19T21:47:40.402865+0800 INFO time cost: 1.1921498775482178
+2024-03-19T21:47:40.403865+0800 INFO After 9 iterations, best obj is 16.47
+2024-03-19T21:47:45.977657+0800 INFO time cost: 1.2168514728546143
+2024-03-19T21:47:45.979659+0800 INFO After 10 iterations, best obj is 16.47
+2024-03-19T21:47:51.587527+0800 INFO time cost: 1.2816762924194336
+2024-03-19T21:47:51.589530+0800 INFO After 11 iterations, best obj is 16.47
+2024-03-19T21:47:51.632708+0800 ERROR can't convert np.ndarray of type numpy.object_. The only supported types are: float64, float32, float16, complex64, complex128, int64, int32, int16, int8, uint8, and bool.
+2024-03-19T21:47:58.129006+0800 INFO time cost: 1.2972216606140137
+2024-03-19T21:47:58.131005+0800 INFO After 13 iterations, best obj is 16.47
+2024-03-19T21:47:58.168529+0800 ERROR can't convert np.ndarray of type numpy.object_. The only supported types are: float64, float32, float16, complex64, complex128, int64, int32, int16, int8, uint8, and bool.
+2024-03-19T21:48:04.611619+0800 INFO time cost: 1.2515490055084229
+2024-03-19T21:48:04.613620+0800 INFO After 15 iterations, best obj is 16.47
+2024-03-19T21:48:04.614620+0800 INFO Best params are: 
+[('feature_transformation', 'standardization'), ('feature_selection', (0, 1, 2, 3, 5, 6, 7)), ('dimensionality_reduction', ('PCA', 2))]
+2024-03-20T13:14:21.742904+0800 INFO time cost: 1.2780835628509521
+2024-03-20T13:14:23.036864+0800 INFO time cost: 1.2839627265930176
+2024-03-20T13:14:23.038866+0800 INFO After 0 iterations, best obj is 14.73
+2024-03-20T13:14:24.290159+0800 INFO time cost: 1.2492947578430176
+2024-03-20T13:14:24.292160+0800 INFO After 1 iterations, best obj is 14.73
+2024-03-20T13:14:25.538357+0800 INFO time cost: 1.2431974411010742
+2024-03-20T13:14:25.540359+0800 INFO After 2 iterations, best obj is 15.19
+2024-03-20T13:14:26.767178+0800 INFO time cost: 1.2238185405731201
+2024-03-20T13:14:26.769179+0800 INFO After 3 iterations, best obj is 15.19
+2024-03-20T13:14:28.004559+0800 INFO time cost: 1.2323787212371826
+2024-03-20T13:14:28.006561+0800 INFO After 4 iterations, best obj is 15.19
+2024-03-20T13:14:29.201172+0800 INFO time cost: 1.191610336303711
+2024-03-20T13:14:29.203173+0800 INFO After 5 iterations, best obj is 15.87
+2024-03-20T13:14:30.429056+0800 INFO time cost: 1.2228822708129883
+2024-03-20T13:14:30.431058+0800 INFO After 6 iterations, best obj is 15.87
+2024-03-20T13:14:31.727722+0800 INFO time cost: 1.2936649322509766
+2024-03-20T13:14:31.729723+0800 INFO After 7 iterations, best obj is 15.87
+2024-03-20T13:14:38.216832+0800 INFO time cost: 1.4047954082489014
+2024-03-20T13:14:38.218835+0800 INFO After 8 iterations, best obj is 15.87
+2024-03-20T13:14:44.419847+0800 INFO time cost: 1.2577495574951172
+2024-03-20T13:14:44.422846+0800 INFO After 9 iterations, best obj is 15.87
+2024-03-20T13:14:50.800473+0800 INFO time cost: 1.2993664741516113
+2024-03-20T13:14:50.801466+0800 INFO After 10 iterations, best obj is 15.87
+2024-03-20T13:14:57.549545+0800 INFO time cost: 1.3151443004608154
+2024-03-20T13:14:57.551473+0800 INFO After 11 iterations, best obj is 16.15
+2024-03-20T13:15:04.141127+0800 INFO time cost: 1.2603693008422852
+2024-03-20T13:15:04.143126+0800 INFO After 12 iterations, best obj is 16.15
+2024-03-20T13:15:04.182464+0800 ERROR can't convert np.ndarray of type numpy.object_. The only supported types are: float64, float32, float16, complex64, complex128, int64, int32, int16, int8, uint8, and bool.
+2024-03-20T13:15:04.336537+0800 ERROR can't convert np.ndarray of type numpy.object_. The only supported types are: float64, float32, float16, complex64, complex128, int64, int32, int16, int8, uint8, and bool.
+2024-03-20T13:15:11.962265+0800 INFO time cost: 1.2461018562316895
+2024-03-20T13:15:11.963265+0800 INFO After 15 iterations, best obj is 16.47
+2024-03-20T13:15:11.964264+0800 INFO Best params are: 
+[('feature_transformation', 'normalization'), ('feature_selection', (0, 1, 2, 3, 4, 5)), ('dimensionality_reduction', ('PCA', 1))]
+2024-03-20T13:15:13.002539+0800 INFO ERROR: Traceback (most recent call last):
+  File "C:\study\LMs\LLMs\projects\chain_of_agents\nodes\src\run.py", line 119, in 
+    metrics, training_log,best_model=main(args.data_path, args.params_path, args.pipeline_path,args.mode)
+  File "C:\study\LMs\LLMs\projects\chain_of_agents\nodes\src\run.py", line 66, in main
+    y_pred = model.predict(dtest)
+  File "C:\Users\Venido\miniconda3\envs\automl\lib\site-packages\xgboost\core.py", line 2272, in predict
+    self._validate_features(fn)
+  File "C:\Users\Venido\miniconda3\envs\automl\lib\site-packages\xgboost\core.py", line 2970, in _validate_features
+    raise ValueError(msg.format(self.feature_names, feature_names))
+ValueError: feature_names mismatch: ['component_1', 'component_2'] ['component_1']
+expected component_2 in input data
+
+2024-03-20T13:15:13.002539+0800 INFO time cost: 1.0352740287780762
