@@ -17,13 +17,14 @@ class TaskSpecifyNode(BasePromptNode):
     def _operation(self,model_config,prompt_config):
         result = self.initialize_prompt_node(model_config,prompt_config=prompt_config)
                 # Define regex pattern to match JSON string
-        pattern = r'```json\s*([\s\S]*?)```'
+        if "```json" in result:
+            pattern = r'```json\s*([\s\S]*?)```'
 
-        # Search for pattern in input string
-        match = re.search(pattern, result)
+            # Search for pattern in input string
+            match = re.search(pattern, result)
 
-        # Extract JSON string from match object
-        result = match.group(1).replace("'", '"')
+            # Extract JSON string from match object
+            result = match.group(1).replace("'", '"')
         
         result_json = json.loads(result)
         return result_json
@@ -32,7 +33,7 @@ class TaskSpecifyNode(BasePromptNode):
     def run(self, inputs: List[Dict]) -> Tuple[Dict, str]:
 
         input_dict =  self.parse_inputs(inputs)
-        data_description = input_dict["data_description"]
+        data_description = input_dict["data_description"]['desc']
         query = input_dict["query"]
         model_config=self.model_config
         prompt_config={"query": query, "data_description": data_description}

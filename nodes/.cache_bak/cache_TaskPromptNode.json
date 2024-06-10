@@ -1,0 +1,1 @@
+{"task_prompt": "Perform a regression analysis to predict the Strength of concrete based on its various components and age in days, using the provided training dataset. The goal is to develop a model that can accurately estimate the strength of concrete given its composition.\nThis is a regression task."}

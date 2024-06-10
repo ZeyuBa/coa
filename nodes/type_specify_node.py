@@ -22,15 +22,20 @@ class TypeSpecifyNode(BasePromptNode):
                                     "max_retries":3,
                         "response_format": {"type": "json_object"}
                         }}
-        prompt_config={"query": query, "data_description": data_description}
+        prompt_config={"query": query, "data_description": data_description["desc"]}
         def _operation(model_config,prompt_config):
             result = self.initialize_prompt_node(model_config,prompt_config=prompt_config)
+            # result=self.response_ollama(model_config,prompt_config)
+            if "```json" in result:
+                
+                result = re.findall(r'```json\n(.*?)\n```', result, re.DOTALL)
 
-            result = re.findall(r'```json\n(.*?)\n```', result, re.DOTALL)
-
-            result_json = json.loads(result[0].replace("'", '"'))
+                result_json = json.loads(result[0].replace("'", '"'))
+            else: result_json=json.loads(result)
             task_type = result_json['task_type'].lower()
             if task_type in TASK_TYPES:
+                print(documents[0].content.iloc[:, :-1].columns)
+                
                 data_report = eval(f'{task_type}_report')(documents[0].content.iloc[:, :-1], documents[0].content.iloc[:, -1])
             
             return {"task_type":task_type,"data_report":data_report}

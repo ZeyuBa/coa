@@ -3,6 +3,7 @@
   inputs: [Query]
   outputs: [data_description]
 
+
 - node: TypeSpecifyNode
   name: TypeSpecifier
   inputs: [DataDescriber]
@@ -20,23 +21,23 @@
 
 - node: DomainExpertNode
   name: DomainExpert
-  inputs: [DataDescriber, TypeSpecifier, TaskPromptCombiner]
+  inputs: [DataDescriber, TypeSpecifier]
   outputs: [domain_knowledge]
-# # Uncomment the following nodes as you implement them
-# # - node: AgentGeneratorNode
-# #   name: AgentGenerator
-# #   inputs: [TaskPromptCombiner]
-# #   outputs: [agent_list]
-# # - name: AgentWorkflowGeneratorNode
-# #   inputs: [AgentGeneratorNode, TaskPromptNode]
-# #   outputs: agent_workflow
 
+- node: EDAExpertNode
+  name: EDAExpert
+  inputs: [DataDescriber,DomainExpert]
+  outputs: [eda_list]
+
+- node: BONode
+  name: BOExpert
+  inputs: [EDAExpert]
+  outputs: [bo_output]
 
 - node: ModelPlanProviderNode
   name:  ModelPlanProvider
   inputs: [TaskPromptCombiner]
   outputs: [model_plan]
-
 
 - node: DataPlanProviderNode
   name: DataPlanProvider
@@ -50,5 +51,5 @@
 
 - node: ConductorNode
   name: Conductor
-  inputs: [DataPlanProvider,ModelPlanProvider]
+  inputs: [BOExpert,DataPlanProvider,ModelPlanProvider]
   outputs: [train_result]

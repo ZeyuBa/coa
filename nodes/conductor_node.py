@@ -1,3 +1,4 @@
+from distutils.util import execute
 import os
 import pickle
 import random
@@ -6,10 +7,11 @@ import time
 import sys
 from decimal import Decimal
 from pathlib import Path
-
+import inspect
 import pandas as pd
-
+from loguru import logger
 from nodes.base_node import BasePromptNode
+# from nodes.src.bo_space import AutoMLSpace
 
 class ConductorNode(BasePromptNode):
 
@@ -17,17 +19,54 @@ class ConductorNode(BasePromptNode):
         super().__init__()
     
     def run(self, query='', inputs=None, documents=[]):
-        data = self._load_data(documents[0])
+
+        
+        data = pd.read_pickle(f'./{documents[3].content}/dev.pkl') if query == 'predict' else pd.read_pickle(f'./{documents[3].content}/train.pkl')
         features = data.columns if query == 'predict' else data.columns[:-1]
+        # # Load the pipeline
+        # with open(pipeline_path, 'rb') as f:
+        #     pipeline = pickle.load(f)
+        # # print(pipeline)
+        # preprocessed_data = data
+        # for op in pipeline:
+        #     op[1]['data']=preprocessed_data
+        #     if op[0]=='resampling':
+        #         continue
+        #     preprocessed_data=eval(op[0])(**op[1])
+        # X = preprocessed_data.drop(columns='target')
+        # y = preprocessed_data['target']
         
         if inputs:
             input_dict = self.parse_inputs(inputs)
-            conduct_plan = self._generate_conduct_plan(features, input_dict)
+            eda_plan=input_dict['eda_list']
+            bo_plan=self.get_nested(input_dict,['bo_output','bo_plan'])
+            func_name=self.get_nested(input_dict,['bo_output','func_name'])
+            func_example=self.get_nested(input_dict,['bo_output','func_example'])
+            space_list=self.get_nested(input_dict,['bo_output','space_list'])
+            exec(f'from nodes.src.{func_name} import {func_name}')
+            expected_args = inspect.getfullargspec(eval(func_name)).args
+            try:
+                execute('from nodes.src.bo_space import AutoMLSpace')
+                sp=AutoMLSpace(space_list)
+            except:
+                sp=None
+            sample=sp.sample_point()
+            params_list=sp.decode_sample(sample,func_name,expected_args)
+            for param in params_list:
+                param['data']=data
+                input_args={elem:param[elem] for elem in expected_args}
+                data=eval(func_name)(**input_args)
+            X,y=data.drop(columns=['target']),data['target']
+            X_path,y_path=f'./{documents[3].content}/X.pkl',f'./{documents[3].content}/y.pkl'
+            X.to_pickle(X_path)
+            y.to_pickle(y_path)
+            data.to_pickle(f'./{documents[3].content}/train.pkl')
+            # conduct_plan = self._generate_conduct_plan(features, input_dict)
         else:
             pipeline = documents[1]
             conduct_plan = self._decode_pipeline(pipeline, features)
-
-        info_dict = self._execute_pipeline(query, documents[0], conduct_plan)
+        model_path=f'./{documents[3].content}/info.json'
+        info_dict = self._execute_pipeline(data_path=[X_path,y_path],query=query,model_path=model_path)
         self.print_and_cache(info_dict['result'], info_dict)
 
         return {self.output_names[0]: info_dict['result'], "_debug": "code"}, 'output_1'
@@ -51,7 +90,7 @@ class ConductorNode(BasePromptNode):
                     conduct_plan.append((key, {'methods': value['option']}))
         return conduct_plan
 
-    def _decode_pipeline(self, pipeline, features):
+    def _decode_pipeline(self, data_path,pipeline, features):
         conduct_plan = []
         for key, value in pipeline:
             if key == 'feature_selection':
@@ -63,17 +102,18 @@ class ConductorNode(BasePromptNode):
                 conduct_plan.append((key, {'methods': value}))
         return conduct_plan
 
-    def _execute_pipeline(self, query, document, conduct_plan):
+    def _execute_pipeline(self,data_path, query,model_path):
         python_interpreter = sys.executable
         script_path = Path(__file__).parent.resolve() / 'src' / 'run.py'
-        pipeline_path = 'best_plan.pkl' if query == 'predict' else 'conduct_plan.pkl'
+        # pipeline_path = 'best_plan.pkl' if query == 'predict' else 'conduct_plan.pkl'
 
-        with open(pipeline_path, 'wb') as f:
-            pickle.dump(conduct_plan, f)
+        # with open(pipeline_path, 'wb') as f:
+        #     pickle.dump(conduct_plan, f)
 
         start = time.time()
-        data_path = document if isinstance(document, str) else 'data.pkl'
-        command = [python_interpreter, script_path, data_path, 'info.json', pipeline_path, query]
+        # data_path = document if isinstance(document, str) else 'train.pkl'
+        X_path,y_path=data_path
+        command = [python_interpreter, script_path, X_path,y_path, model_path, query]
 
         try:
             process_output = subprocess.run(command, capture_output=True, text=True)

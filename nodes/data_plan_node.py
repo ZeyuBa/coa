@@ -14,7 +14,7 @@ class DataPlanProviderNode(BasePromptNode):
         input_dict = self.parse_inputs(inputs)
 
         task_prompt=input_dict['task_prompt']
-        data_description=input_dict["data_description"]
+        data_description=input_dict["data_description"]["desc"]
         domain_knowledge=input_dict['domain_knowledge']
 
         operations=operation.__doc__.split('---')
@@ -22,9 +22,10 @@ class DataPlanProviderNode(BasePromptNode):
         data_plan={}
         def _operation(model_config,prompt_config):
             result = self.initialize_prompt_node(model_config,prompt_config=prompt_config)
-            pattern = r'```json\s*([\s\S]*?)```'
-            match = re.search(pattern, result)
-            result = match.group(1).replace("'", '"')
+            if "```json" in result:
+                pattern = r'```json\s*([\s\S]*?)```'
+                match = re.search(pattern, result)
+                result = match.group(1).replace("'", '"')
             try:
                 result_json = json.loads(result)
                 return result_json

@@ -4,6 +4,7 @@ BasePromptNode:
   is_retry: false
   is_cache: true
   outputs: ['output_1']
+  model_type: "gpt"
   model_config:
     model_name_or_path: "gpt-3.5-turbo"
     model_kwargs:
@@ -13,8 +14,9 @@ BasePromptNode:
 DataDescribeNode:
   outputs: ['data_description']
   verbose: true
+  # is_cache: false
   model_config:
-    model_name_or_path: "gpt-3.5-turbo"
+    # model_name_or_path: "gpt-3.5-turbo"
     model_kwargs:
       temperature: 0
   prompt_template: 'data_description_template'
@@ -24,6 +26,7 @@ DataDescribeNode:
 TypeSpecifyNode:
   outputs: ['type']
   verbose: true
+  # is_cache: false
   prompt_template: 'task_type_template'
   model_config:
     model_kwargs:
@@ -34,6 +37,7 @@ TypeSpecifyNode:
 TaskSpecifyNode:
   outputs: ['specific_task']
   verbose: true
+  # is_cache: false
   prompt_template: 'task_specify_template'
   is_retry: true
   model_config:
@@ -45,17 +49,8 @@ TaskSpecifyNode:
 
 TaskPromptNode:
   outputs: ['task_prompt']
+  # is_cache: false
   verbose: true
-
-ProgrammerNode:
-  outputs: ['code']
-  verbose: true
-  prompt_template: 'program_template'
-  model_config:
-    model_kwargs:
-      temperature: 0
-      max_tokens: 2000
-  is_cache: false
 
 ModelPlanProviderNode:
   outputs: ['model_plan']
@@ -81,6 +76,36 @@ DomainExpertNode:
         type: "json_object"
   is_retry: true
 
+EDAExpertNode:
+  outputs: ['eda_list']
+  verbose: true
+  prompt_template: 'eda_template'
+  max_retries: 5
+  model_type: "gpt"
+  model_config:
+    model_name_or_path: "gpt-4"
+    model_kwargs:
+      temperature: 0.1
+      max_tokens: 3000
+      response_format:
+        type: "json_object"
+  is_retry: true
+
+BONode:
+  outputs: ['bo_output']
+  verbose: true
+  prompt_template: 'search_space_template'
+  max_retries: 5
+  model_type: "gpt"
+  model_config:
+    model_name_or_path: "gpt-4"
+    model_kwargs:
+      temperature: 0.1
+      max_tokens: 1000
+      response_format:
+        type: "json_object"
+  is_retry: true
+
 DataPlanProviderNode:
   outputs: ['data_plan']
   verbose: true
@@ -94,6 +119,17 @@ DataPlanProviderNode:
         type: "json_object"
   is_retry: true
 
+
+ProgrammerNode:
+  outputs: ['code']
+  verbose: true
+  prompt_template: 'program_template'
+  model_config:
+    model_name_or_path: "gpt-4"
+    model_kwargs:
+      temperature: 0
+      max_tokens: 2000
+  is_cache: false
 
 
 ConductorNode:

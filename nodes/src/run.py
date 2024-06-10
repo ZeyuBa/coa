@@ -39,23 +39,11 @@ def evaluate_model(model, X_test, y_test, type):
     else:
         raise ValueError("Invalid task type. Please choose either 'classification' or 'regression'.")
 
-def main(data_path, params_path, pipeline_path,mode):
+def main(X_path,y_path, params_path, mode):
     info_dict=demjson3.decode_file(params_path)
     type,params=info_dict['type'],info_dict['params']
-    data = pd.read_pickle(data_path)
-
-    # Load the pipeline
-    with open(pipeline_path, 'rb') as f:
-        pipeline = pickle.load(f)
-    # print(pipeline)
-    preprocessed_data = data
-    for op in pipeline:
-        op[1]['data']=preprocessed_data
-        if op[0]=='resampling':
-            continue
-        preprocessed_data=eval(op[0])(**op[1])
-    X = preprocessed_data.drop(columns='target')
-    y = preprocessed_data['target']
+    X=pd.read_pickle(X_path)
+    y=pd.read_pickle(y_path)
     if mode=='predict':
                 # To load the model later
         model = xgb.Booster()
@@ -64,17 +52,10 @@ def main(data_path, params_path, pipeline_path,mode):
 
         # Now use dtest for prediction
         y_pred = model.predict(dtest)
-        # y_pred=y_pred>0.5
-        # print(y_pred)
         df_y_pred = pd.DataFrame({'Strength':y_pred})
-        # df_y_pred['Strength'] = df_y_pred['Strength'].round(2)
-        # Save to CSV
         df_y_pred.to_csv('prediction.csv', index=False)
-        # y_pred.to_csv('prediction.csv')
         return {"test":-1.0}, None,None
     else:
-            # print('data time cost:',time.time()-start)
-
         # Split the data into training and test sets
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=42)
         kf = KFold(n_splits=5)
@@ -110,13 +91,13 @@ def main(data_path, params_path, pipeline_path,mode):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run machine learning model training and evaluation.')
-    parser.add_argument('data_path', type=str,help='Path to the data file')
-    parser.add_argument('params_path', type=str,help='Path to the parameters file')
-    parser.add_argument('pipeline_path', type=str ,help='Path to the pipeline file')
+    parser.add_argument('X_path', type=str,help='Path to the feature file')
+    parser.add_argument('y_path', type=str,help='Path to the label file')
+    parser.add_argument('params_path', type=str ,help='Path to the model configure file')
     parser.add_argument('mode', type=str ,help='train or predict')
     args = parser.parse_args()
 
-    metrics, training_log,best_model=main(args.data_path, args.params_path, args.pipeline_path,args.mode)
+    metrics, training_log,best_model=main(args.X_path,args.y_path, args.params_path, args.mode)
 
     demjson3.encode_to_file('result.json', {'metrics': metrics, 'training_log': training_log},overwrite=True)
     import os 
@@ -130,18 +111,18 @@ if __name__ == '__main__':
                 if best_metric < metrics['test']:
                     demjson3.encode_to_file('best_metric.json',metrics['test'],overwrite=True)
                     best_model.save_model('best_model.json')
-                    with open(args.pipeline_path, 'rb') as f:
-                        pipeline = pickle.load(f)
-                    with open('best_plan.pkl', 'wb') as f:
-                        pickle.dump(pipeline, f)
+                    # with open(args.pipeline_path, 'rb') as f:
+                    #     pipeline = pickle.load(f)
+                    # with open('best_plan.pkl', 'wb') as f:
+                    #     pickle.dump(pipeline, f)
             else:
                 if metrics['test'] > best_metric:
                     demjson3.encode_to_file('best_metric.json',metrics['test'],overwrite=True)
                     best_model.save_model('best_model.json')
-                    with open(args.pipeline_path, 'rb') as f:
-                        pipeline = pickle.load(f)
-                    with open('best_plan.pkl', 'wb') as f:
-                        pickle.dump(pipeline, f)
+                    # with open(args.pipeline_path, 'rb') as f:
+                    #     pipeline = pickle.load(f)
+                    # with open('best_plan.pkl', 'wb') as f:
+                    #     pickle.dump(pipeline, f)
     # Print the result as a JSON string
     print(metrics['test'])
     # os.environ['RUN_RESUlT']=str(metrics['test'])

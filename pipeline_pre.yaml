@@ -1,0 +1,19 @@
+- node: DataDescribeNode
+  name: DataDescriber
+  inputs: [Query]
+  outputs: [data_description]
+
+- node: TypeSpecifyNode
+  name: TypeSpecifier
+  inputs: [DataDescriber]
+  outputs: [type]
+
+- node: TaskSpecifyNode
+  name: TaskSpecifier
+  inputs: [DataDescriber, TypeSpecifier]
+  outputs: [specific_task]
+
+- node: TaskPromptNode
+  name: TaskPromptCombiner
+  inputs: [TypeSpecifier, TaskSpecifier]
+  outputs: [task_prompt]

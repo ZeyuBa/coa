@@ -1,9 +1,9 @@
-from uu import decode
-from skopt.space import Integer
+
 from itertools import combinations, permutations
 import random
 import numpy as np
 from hebo.design_space.design_space import DesignSpace
+import pandas as pd
 class AutoMLSpace:
     def __init__(self, num_features, op_dict):
         self.num_features = num_features
@@ -15,17 +15,17 @@ class AutoMLSpace:
 
     def _initialize_operations(self):
         operations = {
-            'feature_transformation': ['normalization', 'standardization']
-                                +['N/A'],
+            # 'feature_transformation': ['normalization', 'standardization']
+            #                     +['N/A'],
             'feature_selection': list(self._calculate_feature_subsets().keys())
                                 +['N/A'],
-            'dimensionality_reduction': ['PCA']
-                                #   +[ 'ISOMAP']
-                                +['N/A']
-                                ,
-            'resampling': ['N/A', 'upsampling', 'downsampling'],
-            'order': list(self._calculate_operation_orders().keys()),
-            'n_components': list(range(1, self.num_features-1))
+            # 'dimensionality_reduction': ['PCA']
+            #                     #   +[ 'ISOMAP']
+            #                     +['N/A']
+            #                     ,
+            # 'resampling': ['N/A', 'upsampling', 'downsampling'],
+            # 'order': list(self._calculate_operation_orders().keys()),
+            # 'n_components': list(range(1, self.num_features-1))
         }
         return operations
 
@@ -51,18 +51,19 @@ class AutoMLSpace:
         return self.space.sample()
         # return [dimension.rvs(random_state=random.randint(1, 100)) for dimension in self.space]
 
-    def decode_sample(self, sample):
+    def decode_sample(self, sample:pd.DaraFrame ):
         ks=list(self.operations.keys())
         vs=sample[ks].values[0]
         decoded = {k:self.operations[k][v] for k,v in zip(ks,vs) }
         pipeline=[0 for _ in range(self.num_operations)]
-        for i in decoded['order']:
-            
-            if decoded[self.op_dict[i]] != 'N/A':
-                if self.op_dict[i] == 'dimensionality_reduction':
-                    pipeline[i]=(self.op_dict[i],(decoded[self.op_dict[i]],decoded['n_components'])) 
-                else: 
-                     pipeline[i]=(self.op_dict[i],decoded[self.op_dict[i]],)
+        if 'order' in decoded:
+            for i in decoded['order']:
+                
+                if decoded[self.op_dict[i]] != 'N/A':
+                    if self.op_dict[i] == 'dimensionality_reduction':
+                        pipeline[i]=(self.op_dict[i],(decoded[self.op_dict[i]],decoded['n_components'])) 
+                    else: 
+                        pipeline[i]=(self.op_dict[i],decoded[self.op_dict[i]],)
             # Apply the constraints
         feature_selection_idx = self.op_dict.keys().index('feature_selection') if 'feature_selection' in self.op_dict else -1
         dimensionality_reduction_idx = self.op_dict.keys().index('dimensionality_reduction') if 'dimensionality_reduction' in self.op_dict else -1
@@ -70,7 +71,7 @@ class AutoMLSpace:
         if feature_selection_idx > dimensionality_reduction_idx and dimensionality_reduction_idx != -1 and feature_selection_idx != -1:
             pipeline[feature_selection_idx] = 0
 
-        if 'feature_selection' in decoded and decoded['feature_selection'] != 'N/A' and decoded['dimensionality_reduction'] != 'N/A':
+        if decoded.get('feature_selection',"N/A") != 'N/A' and decoded.get('dimensionality_reduction',"N/A") != 'N/A':
             selected_features_len = len(tuple(decoded['feature_selection']))
             if decoded['n_components'] > selected_features_len:
                 pipeline[dimensionality_reduction_idx] = 0
@@ -86,7 +87,6 @@ if __name__ == "__main__":
             1:'feature_selection',
             2:'dimensionality_reduction',
             # 3:'resampling',
-
 
     }
     sp = AutoMLSpace(num_features, op_dict)

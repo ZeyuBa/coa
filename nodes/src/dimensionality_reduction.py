@@ -1,4 +1,5 @@
 
+import stat
 import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.manifold import Isomap
@@ -36,13 +37,20 @@ if __name__ == "__main__":
         'feature2': [5, 6, 7, 8],
         'target': [0, 1, 0, 1]
     })
-
-    # Test PCA method
-    pca_reduced_data = dimensionality_reduction(data, 'PCA', 1)
-    print("PCA Reduced Data:")
-    print(pca_reduced_data)
-
-    # Test ISOMAP method
-    isomap_reduced_data = dimensionality_reduction(data, 'ISOMAP', 1)
-    print("\nISOMAP Reduced Data:")
-    print(isomap_reduced_data)
+    data=pd.read_pickle('data.pkl')
+    print(data.skew().sort_values(key=lambda x: abs(x),ascending=False).to_string())
+    # import time
+    # import warnings
+    # warnings.filterwarnings("ignore")
+    # start=time.time()
+    # # Test PCA method
+    # pca_reduced_data = dimensionality_reduction(data, 'PCA', 6)
+    # print("PCA Reduced Data:")
+    # print(pca_reduced_data)
+    # print('data time cost:',time.time()-start)
+    # start=time.time()
+    # # Test ISOMAP method
+    # isomap_reduced_data = dimensionality_reduction(data, 'ISOMAP', 6)
+    # print("\nISOMAP Reduced Data:")
+    # print(isomap_reduced_data)
+    # print('data time cost:',time.time()-start)

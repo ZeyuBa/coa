@@ -1,1 +1,3 @@
-/kaggle
+# /kaggle
+/__pycache__
+/.env
